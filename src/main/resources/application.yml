@@ -1,0 +1,83 @@
+server:
+    port: 8123
+    servlet:
+        context-path: /api
+        # cookie过期时间30天
+        session:
+            cookie:
+                max-age: 2592000
+spring:
+    application:
+        name: timeless-picture-backend
+    # 空间图片分表
+    shardingsphere:
+        datasource:
+            names: timeless_picture
+            yu_picture:
+                type:
+                driver-class-name: com.mysql.cj.jdbc.Driver
+                url: jdbc:mysql://localhost:3306/timeless_picture
+                username: root
+                password: qwe@321
+        rules:
+            sharding:
+                tables:
+                    picture:
+                        actual-data-nodes: timeless_picture.picture  # 动态分表
+                        table-strategy:
+                            standard:
+                                sharding-column: spaceId
+                                sharding-algorithm-name: picture_sharding_algorithm  # 使用自定义分片算法
+                sharding-algorithms:
+                    picture_sharding_algorithm:
+                        type: CLASS_BASED
+                        props:
+                            strategy: standard
+                            algorithmClassName: com.timeless.timelesspicturebackend.manager.sharding.PictureShardingAlgorithm
+        props:
+            sql-show: true
+
+    # 数据库配置
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/timeless_picture?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+        username: root
+        password: qwe@321
+    # redis配置
+    redis:
+        host: 127.0.0.1
+        port: 6379
+        database: 0
+        password: 123456
+        timeout: 10000
+    # session配置
+    session:
+        store-type: redis
+        # 过期时间30天
+        timeout: 2592000
+    servlet:
+        multipart:
+            max-file-size: 10MB
+    profiles:
+        active: local
+mybatis-plus:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql
+        map-underscore-to-camel-case: false # 驼峰命名
+    global-config:
+        db-config:
+            logic-delete-field: isDelete
+            logic-delete-value: 1
+            logic-not-delete-value: 0
+        enable-sql-runner: true
+# 接口文档配置
+knife4j:
+    enable: true
+    openapi:
+        title: 接口文档
+        version: 1.0
+        group:
+            default:
+                api-rule: package
+                api-rule-resources:
+                    - com.timeless.timelesspicturebackend.controller
