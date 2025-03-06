@@ -463,8 +463,8 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
         }
         String thumbnailUrl = oldPicture.getThumbnailUrl();
         // 去掉域名
-        url = StrUtil.removePrefix(url, "https://timeless-1329161178.cos.ap-shanghai.myqcloud.com/");
-        thumbnailUrl = StrUtil.removePrefix(thumbnailUrl, "https://timeless-1329161178.cos.ap-shanghai.myqcloud.com/");
+        url = StrUtil.removePrefix(url, "域名");
+        thumbnailUrl = StrUtil.removePrefix(thumbnailUrl, "域名");
         if (StrUtil.isNotBlank(url)) {
             // 删除图片
             cosManager.deleteObject(url);
